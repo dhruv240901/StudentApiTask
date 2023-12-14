@@ -26,7 +26,5 @@ class BaseModel extends Model
         static::updating(function ($model) {
             $model->updated_by = auth()->id();
         });
-
     }
-
 }

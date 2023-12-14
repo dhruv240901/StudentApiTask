@@ -15,17 +15,10 @@ class AuthController extends Controller
     /* function to login user */
     public function login(Request $request)
     {
-        $validateUser = Validator::make(
-            $request->all(),
-            [
-                'email'    => 'required|email',
-                'password' => 'required|min:6'
-            ]
-        );
-
-        if ($validateUser->fails()) {
-            return $this->error(401, $validateUser->errors());
-        }
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required|min:6'
+        ]);
 
         if (Auth::attempt($request->only(['email', 'password']))) {
             $user = User::where('email', $request->email)->first();

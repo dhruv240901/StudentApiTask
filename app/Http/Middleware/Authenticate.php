@@ -12,18 +12,13 @@ class Authenticate extends Middleware
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      */
-    protected function redirectTo(Request $request): ?string
-    {
-        return $request->expectsJson() ? null : route('login');
-    }
+    // protected function redirectTo(Request $request): ?string
+    // {
+    //     return $request->expectsJson() ? null : route('login');
+    // }
 
     protected function unauthenticated($request, array $guards)
     {
-        // $return_data = array();
-        // $return_data['code'] = 0;
-        // $return_data['status'] = 'FAIL';
-        // $return_data['message'] = "UnAuthenticated";
-
         abort($this->error(403,'Unauthorized'));
     }
 }

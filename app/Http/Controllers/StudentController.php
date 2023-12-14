@@ -16,15 +16,26 @@ class StudentController extends Controller
     public function import(Request $request)
     {
         // Validate import file
-        $validateFile = Validator::make($request->all(), [
-            'student_file' => 'required|file|mimes:csv,txt,xlsx,xls',
+        $request->validate([
+            'student_file' => 'required|file|mimes:csv,xlsx,xls',
         ]);
 
-        if ($validateFile->fails()) {
-            return $this->error(401, $validateFile->errors());
+        try {
+            // Import data from the excel or csv file and save it to database
+            Excel::import(new StudentImport, $request->file('student_file'));
+            return $this->success(200, 'students added successfully');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+
+            // Display validation error messages
+            $errorMessages = [];
+            foreach ($failures as $failure) {
+                $errorMessages[] = 'Row ' . $failure->row() . ': ' . implode(' ', $failure->errors());
+            }
+            // dd($errorMessages);
+            return $errorMessages;
+        }catch (\Exception $e) {
+            return $this->error(500, $e->getMessage());
         }
-        
-        Excel::import(new StudentImport, $request->file('student_file'));
-        return $this->success(200, 'students added successfully');
     }
 }
