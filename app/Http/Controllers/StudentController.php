@@ -32,7 +32,7 @@ class StudentController extends Controller
             foreach ($failures as $failure) {
                 $errorMessages[] = 'Row ' . $failure->row() . ': ' . implode(' ', $failure->errors());
             }
-            // dd($errorMessages);
+
             return $errorMessages;
         }catch (\Exception $e) {
             return $this->error(500, $e->getMessage());

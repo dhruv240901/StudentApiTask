@@ -29,9 +29,10 @@ class AuthController extends Controller
         return $this->error(401, 'Invalid Credentials');
     }
 
-    public function logout(Request $request)
+    /* function to logout user */
+    public function logout()
     {
-        $request->user()->tokens()->delete();
+        auth()->user()->tokens()->delete();
         return $this->success(200, 'User Logged Out Successfully');
     }
 }
