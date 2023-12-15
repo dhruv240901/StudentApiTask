@@ -27,6 +27,7 @@ Route::middleware('auth:sanctum', 'dbtransaction')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::post('import', [StudentController::class, 'import']);
+    Route::post('export', [StudentController::class, 'export']);
 
     Route::prefix('schedule')->group(function () {
         Route::post('store', [ScheduleController::class, 'store']);
