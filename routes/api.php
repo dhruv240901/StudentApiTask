@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +22,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum','dbtransaction')->group(function () {
+Route::middleware('auth:sanctum', 'dbtransaction')->group(function () {
 
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::post('import', [StudentController::class, 'import']);
+
+    Route::prefix('schedule')->group(function () {
+        Route::post('store', [ScheduleController::class, 'store']);
+    });
 });
