@@ -10,6 +10,12 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class StudentImport implements ToModel, WithHeadingRow, WithValidation
 {
+    public $filename;
+
+    public function __construct($filename)
+    {
+        $this->filename=$filename;
+    }
     /**
      * @param array $row
      *
@@ -31,6 +37,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
                 "city"         => $row['city'],
                 "state"        => $row['state'],
                 "pincode"      => $row['pincode'],
+                "filename"     => $this->filename
             ]);
 
             // Save student data
