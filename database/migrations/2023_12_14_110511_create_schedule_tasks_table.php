@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('class')->nullable();
             $table->date('schedule_date');
             $table->time('schedule_time');
-            $table->enum('type',['individual','all']);
+            $table->enum('type',['individual','class']);
             $table->string('student_code')->nullable();
             $table->foreign('student_code')->references('student_code')->on('students')
             ->onDelete('CASCADE')->onUpdate('CASCADE');

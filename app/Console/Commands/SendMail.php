@@ -35,7 +35,7 @@ class SendMail extends Command
             $value->update(['status' => 'schedule']);
             $currentTime = Carbon::now();
             if ($value->schedule_date == $currentTime->format('Y-m-d') && Carbon::parse($value->schedule_time)->format('H:i') == $currentTime->format('H:i')) {
-                if ($value->type == 'all') {
+                if ($value->type == 'class') {
                     // Send mail to whole class
                     $students = Student::where('standard', $value->class)->get();
                     foreach ($students as $student) {
@@ -52,6 +52,8 @@ class SendMail extends Command
                     dispatch(new SendMailJob($student));
                     $value->update(['status' => 'complete', 'is_sent' => true]);
                 }
+
+                $value->update(['status' => 'complete', 'is_sent' => true]);
             }
         }
     }
