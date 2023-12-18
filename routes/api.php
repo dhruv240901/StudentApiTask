@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\StudentController;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,15 +21,21 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
+// Login Route 
 Route::post('login', [AuthController::class, 'login']);
 
-Route::middleware('auth:sanctum', 'dbtransaction')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
+    // Logout Route
     Route::post('logout', [AuthController::class, 'logout']);
 
-    Route::post('import', [StudentController::class, 'import']);
-    Route::post('export', [StudentController::class, 'export']);
+    // Student Routes
+    Route::prefix('student')->group(function () {
+        Route::post('import', [StudentController::class, 'import']);
+        Route::post('export', [StudentController::class, 'export']);
+    });
 
+    // Schedule Routes
     Route::prefix('schedule')->group(function () {
         Route::post('store', [ScheduleController::class, 'store']);
     });
