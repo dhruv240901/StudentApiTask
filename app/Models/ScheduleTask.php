@@ -8,5 +8,5 @@ class ScheduleTask extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable=['class','schedule_date','schedule_time','type','student_code','is_active','status','is_sent','created_by','updated_by'];
+    protected $fillable = ['class_student_code', 'schedule_date', 'schedule_time', 'type', 'is_active', 'status', 'is_sent', 'created_by', 'updated_by'];
 }

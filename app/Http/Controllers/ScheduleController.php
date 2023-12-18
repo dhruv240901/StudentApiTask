@@ -15,15 +15,14 @@ class ScheduleController extends Controller
     {
         // Validate schedule task data
         $request->validate([
-            'class'         => 'required_if:type,all|numeric',
-            'schedule_date' => 'required|date_format:Y-m-d',
-            'schedule_time' => 'required|date_format:H:i:s',
-            'type'          => 'required|in:individual,class',
-            'student_code'  => 'required_if:type,individual|string|exists:students,student_code',
+            'class_student_code' => 'required|string',
+            'schedule_date'      => 'required|date_format:Y-m-d',
+            'schedule_time'      => 'required|date_format:H:i:s',
+            'type'               => 'required|in:individual,class',
         ]);
 
         // Insert Schedule task into the database
         ScheduleTask::create($request->all());
-        return $this->success(200,'Schedule created successfully');
+        return $this->success(200, 'Schedule created successfully');
     }
 }

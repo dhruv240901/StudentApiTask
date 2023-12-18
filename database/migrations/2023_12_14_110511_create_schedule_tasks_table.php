@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::create('schedule_tasks', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('class')->nullable();
+            $table->string('class_student_code');
             $table->date('schedule_date');
             $table->time('schedule_time');
             $table->enum('type',['individual','class']);
-            $table->string('student_code')->nullable();
-            $table->foreign('student_code')->references('student_code')->on('students')
-            ->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->enum('status',['schedule','in_progress','complete']);
             $table->boolean('is_sent')->default(false);
             $table->boolean('is_active')->default(true);

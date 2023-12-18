@@ -36,7 +36,7 @@ class SendMail extends Command
             $value->update(['status' => 'schedule']);
             if ($value->type == 'class') {
                 // Send mail to whole class
-                $students = Student::where('standard', $value->class)->get();
+                $students = Student::where('standard', $value->class_student_code)->get();
                 foreach ($students as $student) {
                     $value->update(['status' => 'in_progress']);
                     dispatch(new SendMailJob($student));
@@ -46,7 +46,7 @@ class SendMail extends Command
 
             if ($value->type == 'individual') {
                 // Send mail to individual student
-                $student = Student::where('student_code', $value->student_code)->first();
+                $student = Student::where('student_code', $value->class_student_code)->first();
                 $value->update(['status' => 'in_progress']);
                 dispatch(new SendMailJob($student));
                 $value->update(['status' => 'complete', 'is_sent' => true]);
