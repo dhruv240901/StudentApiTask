@@ -33,12 +33,12 @@ class SendMail extends Command
         $schedules = ScheduleTask::where('is_sent', false)->where('is_active', true)->where('schedule_date', $currentTime->format('Y-m-d'))->where('schedule_time', $currentTime->format('H:i:00'))->get();
 
         foreach ($schedules as $value) {
-            $value->update(['status' => config('constants.SCHEDULE')]);
+            $value->update(['status' => config('constants.SCHEDULE.START')]);
             if ($value->type == 'class') {
                 // Send mail to whole class
                 $students = Student::where('standard', $value->class_student_code)->get();
                 foreach ($students as $student) {
-                    $value->update(['status' => config('constants.PROGRESS')]);
+                    $value->update(['status' => config('constants.SCHEDULE.PROGRESS')]);
                     dispatch(new SendMailJob($student));
                 }
             }
@@ -46,11 +46,11 @@ class SendMail extends Command
             if ($value->type == 'individual') {
                 // Send mail to individual student
                 $student = Student::where('student_code', $value->class_student_code)->first();
-                $value->update(['status' => config('constants.PROGRESS')]);
+                $value->update(['status' => config('constants.SCHEDULE.PROGRESS')]);
                 dispatch(new SendMailJob($student));
             }
 
-            $value->update(['status' => config('constants.COMPLETE'), 'is_sent' => true]);
+            $value->update(['status' => config('constants.SCHEDULE.END'), 'is_sent' => true]);
         }
     }
 }

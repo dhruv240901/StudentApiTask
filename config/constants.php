@@ -1,7 +1,9 @@
 <?php
 
 return [
-    'SCHEDULE' => 'Schedule',
-    'PROGRESS' => 'in_progress',
-    'COMPLETE' => 'complete',
+    'SCHEDULE' => [
+        'START'    => 'Schedule',
+        'PROGRESS' => 'in_progress',
+        'END'      => 'complete',
+    ]
 ];
