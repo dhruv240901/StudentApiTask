@@ -18,11 +18,11 @@ class ScheduleController extends Controller
             'class'         => 'required_if:type,all|numeric',
             'schedule_date' => 'required|date_format:Y-m-d',
             'schedule_time' => 'required|date_format:H:i:s',
-            'type'          => 'required|in:individual,all',
+            'type'          => 'required|in:individual,class',
             'student_code'  => 'required_if:type,individual|string|exists:students,student_code',
         ]);
 
-        // Insert Schedule task into the database 
+        // Insert Schedule task into the database
         ScheduleTask::create($request->all());
         return $this->success(200,'Schedule created successfully');
     }

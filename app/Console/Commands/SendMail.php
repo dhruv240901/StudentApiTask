@@ -29,32 +29,30 @@ class SendMail extends Command
      */
     public function handle()
     {
-        $schedules = ScheduleTask::where('is_sent', false)->where('is_active', true)->get();
+        $currentTime = Carbon::now();
+        $schedules = ScheduleTask::where('is_sent', false)->where('is_active', true)->where('schedule_date', $currentTime->format('Y-m-d'))->where('schedule_time', $currentTime->format('H:i:00'))->get();
 
         foreach ($schedules as $value) {
             $value->update(['status' => 'schedule']);
-            $currentTime = Carbon::now();
-            if ($value->schedule_date == $currentTime->format('Y-m-d') && Carbon::parse($value->schedule_time)->format('H:i') == $currentTime->format('H:i')) {
-                if ($value->type == 'class') {
-                    // Send mail to whole class
-                    $students = Student::where('standard', $value->class)->get();
-                    foreach ($students as $student) {
-                        $value->update(['status' => 'in_progress']);
-                        dispatch(new SendMailJob($student));
-                    }
-                    $value->update(['status' => 'complete','is_sent' => true]);
-                }
-
-                if ($value->type == 'individual') {
-                    // Send mail to individual student
-                    $student = Student::where('student_code', $value->student_code)->first();
+            if ($value->type == 'class') {
+                // Send mail to whole class
+                $students = Student::where('standard', $value->class)->get();
+                foreach ($students as $student) {
                     $value->update(['status' => 'in_progress']);
                     dispatch(new SendMailJob($student));
-                    $value->update(['status' => 'complete', 'is_sent' => true]);
                 }
-
                 $value->update(['status' => 'complete', 'is_sent' => true]);
             }
+
+            if ($value->type == 'individual') {
+                // Send mail to individual student
+                $student = Student::where('student_code', $value->student_code)->first();
+                $value->update(['status' => 'in_progress']);
+                dispatch(new SendMailJob($student));
+                $value->update(['status' => 'complete', 'is_sent' => true]);
+            }
+
+            $value->update(['status' => 'complete', 'is_sent' => true]);
         }
     }
 }
