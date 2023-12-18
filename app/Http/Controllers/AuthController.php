@@ -19,16 +19,16 @@ class AuthController extends Controller
         if (Auth::attempt($request->only(['email', 'password']))) {
             $user = User::where('email', $request->email)->first();
             $data['token'] = $user->createToken("API TOKEN")->plainTextToken;
-            return success(200, 'User Logged In Successfully', $data);
+            return success(200, __('string.LoginSuccess'), $data);
         }
 
-        return error(403, 'Invalid Credentials');
+        return error(403, __('string.InvalidCredentials'));
     }
 
     /* function to logout user */
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return success(200, 'User Logged Out Successfully');
+        return success(200, __('string.LogoutSuccess'));
     }
 }

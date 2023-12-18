@@ -24,7 +24,7 @@ class StudentController extends Controller
 
             // Import data from the excel or csv file and save it to database
             Excel::import(new StudentImport($filename), $request->file('student_file'));
-            return success(200, 'students added successfully');
+            return success(200,__('string.StudentAdded'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 

@@ -16,6 +16,6 @@ class Authenticate extends Middleware
 
     protected function unauthenticated($request, array $guards)
     {
-        abort(error(403, 'Unauthorized'));
+        abort(error(403, __('string.Unauthenticated')));
     }
 }

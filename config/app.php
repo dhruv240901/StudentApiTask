@@ -187,4 +187,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class
     ])->toArray(),
 
+    'files' => [
+        config_path('constants.php'),
+    ],
 ];
