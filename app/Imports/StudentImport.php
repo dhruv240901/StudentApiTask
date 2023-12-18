@@ -24,10 +24,11 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
     public function model(array $row)
     {
         // Validation will be handled automatically
-
         $checkStudent = Student::where('student_code', $row['student_code'])->first();
         if (!$checkStudent) {
-            $student =  new Student([
+
+            // Save student data
+            $student=Student::create([
                 "student_code" => $row['student_code'],
                 "name"         => $row['name'],
                 "email"        => $row['email'],
@@ -40,27 +41,11 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
                 "filename"     => $this->filename
             ]);
 
-            // Save student data
-            $student->save();
-
             // Calculate total marks, percentage, and percentile
             $totalMarks = $row['science'] + $row['maths'] + $row['english'] + $row['gujarati'] + $row['hindi']; // Add other subject marks as needed
             $percentage = ($totalMarks / (5 * 100)) * 100;
             $percentile = $this->calculatePercentile($percentage);
 
-            if ($row['science'] < 33 || $row['maths'] < 33 || $row['english'] < 33 || $row['gujarati'] < 33 || $row['hindi'] < 33) {
-                $result = 'Fail';
-            } elseif ($percentage >= 80) {
-                $result = 'First Class With Destinction';
-            } elseif ($percentage >= 65) {
-                $result = 'First Class';
-            } elseif ($percentage >= 50) {
-                $result = 'Second Class';
-            } elseif ($percentage >= 33) {
-                $result = 'Pass Class';
-            } else {
-                $result = 'Fail';
-            }
             // Save result data
             Result::create([
                 'student_id'   => $student->id,
@@ -72,7 +57,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
                 'total_marks'  => $totalMarks,
                 'percentage'   => $percentage,
                 'percentile'   => $percentile,
-                'result'       => $result
+                'result'       => $this->checkResultStatus($row,$percentage)
             ]);
 
             return $student;
@@ -89,10 +74,31 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
         return $percentiles[$roundedRank - 1];
     }
 
+    // function to check result status
+    private function checkResultStatus($row,$percentage)
+    {
+        if ($row['science'] < 33 || $row['maths'] < 33 || $row['english'] < 33 || $row['gujarati'] < 33 || $row['hindi'] < 33) {
+            $result = 'Fail';
+        } elseif ($percentage >= 80) {
+            $result = 'First Class With Destinction';
+        } elseif ($percentage >= 65) {
+            $result = 'First Class';
+        } elseif ($percentage >= 50) {
+            $result = 'Second Class';
+        } elseif ($percentage >= 33) {
+            $result = 'Pass Class';
+        } else {
+            $result = 'Fail';
+        }
+
+        return $result;
+    }
+
     // Validate csv or excel file data
     public function rules(): array
     {
         $rules = [
+            'student_code' => 'required|regex:/^stu_\d{5}$/',
             'name'         => 'required|string',
             'email'        => 'required|email',
             'gender'       => 'required|in:male,female,other',
@@ -100,7 +106,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
             'standard'     => 'required|integer|in:1,2,3,4,5,6,7,8,9,10,11,12',
             'city'         => 'required|string',
             'state'        => 'required|string',
-            'pincode'      => 'required|numeric',
+            'pincode'      => 'required|numeric|digits:6',
             'science'      => 'required|numeric|min:0|max:100',
             'maths'        => 'required|numeric|min:0|max:100',
             'english'      => 'required|numeric|min:0|max:100',
@@ -108,16 +114,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
             'hindi'        => 'required|numeric|min:0|max:100',
         ];
 
-        // Add a unique validation rule for student_code only if the student does not exist
-        // if (!$this->studentExists(request()->input('student_code'))) {
-        //     $rules['student_code'] = 'required|unique:students,student_code';
-        // }
-
         return $rules;
     }
 
-    private function studentExists($studentCode)
-    {
-        return Student::where('student_code', $studentCode)->exists();
-    }
 }
