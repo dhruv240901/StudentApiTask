@@ -19,12 +19,12 @@ class ExportStudent implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        if($this->request['export_by']=='filename'){
-            return Student::with('result')->select('student_code','name','email','gender','parent_name','standard','city','state','pincode')->where('filename',$this->request['filename'])->get();
+        if($this->request['export_type']=='file'){
+            return Student::with('result')->select('student_code','name','email','gender','parent_name','standard','city','state','pincode')->where('file_id',$this->request['export_by'])->get();
         }
 
-        if($this->request['export_by']=='class'){
-            return Student::with('result')->select('student_code','name','email','gender','parent_name','standard','city','state','pincode')->where('standard',$this->request['class'])->get();
+        if($this->request['export_type']=='class'){
+            return Student::with('result')->select('student_code','name','email','gender','parent_name','standard','city','state','pincode')->where('standard',$this->request['export_by'])->get();
         }
     }
 

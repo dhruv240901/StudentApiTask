@@ -19,7 +19,7 @@ class ScheduleController extends Controller
         ]);
 
         // Insert Schedule task into the database
-        ScheduleTask::create($request->all());
-        return success(200, __('string.ScheduleCreated'));
+        $scheduleTask = ScheduleTask::create($request->all());
+        return success(200, __('string.ScheduleCreated'), ['schedule_task' => $scheduleTask]);
     }
 }

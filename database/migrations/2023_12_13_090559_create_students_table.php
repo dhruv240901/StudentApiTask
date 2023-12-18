@@ -22,7 +22,9 @@ return new class extends Migration
             $table->string('city',51);
             $table->string('state',51);
             $table->string('pincode',6);
-            $table->string('filename');
+            $table->uuid('file_id')->nullable();
+            $table->foreign('file_id')->references('id')->on('files')
+            ->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->boolean('is_active')->default(true);
             $table->uuid('created_by')->nullable();
             $table->uuid('updated_by')->nullable();

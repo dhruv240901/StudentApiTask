@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportStudent;
 use App\Imports\StudentImport;
+use App\Models\File;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -22,9 +23,12 @@ class StudentController extends Controller
             $file = $request->file('student_file');
             $filename = $file->getClientOriginalName();
 
+            // Save File name in files table
+            $file = File::create(['name' => $filename]);
+
             // Import data from the excel or csv file and save it to database
-            Excel::import(new StudentImport($filename), $request->file('student_file'));
-            return success(200,__('string.StudentAdded'));
+            Excel::import(new StudentImport($filename,$file), $request->file('student_file'));
+            return success(200, __('string.StudentAdded'));
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 
@@ -45,9 +49,8 @@ class StudentController extends Controller
     {
         // Validate export file request
         $request->validate([
-            'export_by' => 'required|in:filename,class',
-            'filename'  => 'required_if:export_by,filename',
-            'class'     => 'required_if:export_by,class',
+            'export_type' => 'required|in:file,class',
+            'export_by'   => 'required|string',
         ]);
 
         return Excel::download(new ExportStudent($request->all()), 'StudentData.csv');

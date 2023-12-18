@@ -1,7 +1,7 @@
 <?php
 
 // function to display success message
-function success($status, $message, $data = null)
+function success($status, $message, $data = [])
 {
     $successMessages = [
         200 => 'Success',
@@ -22,7 +22,7 @@ function success($status, $message, $data = null)
 }
 
 // function to display error message
-function error($status, $message, $data = null)
+function error($status, $message, $data = [])
 {
     $errorMessages = [
         400 => 'Bad Request!',

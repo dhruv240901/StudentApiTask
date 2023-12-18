@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\File;
 use App\Models\Result;
 use App\Models\Student;
 use Maatwebsite\Excel\Concerns\ToModel;
@@ -10,11 +11,12 @@ use Maatwebsite\Excel\Concerns\WithValidation;
 
 class StudentImport implements ToModel, WithHeadingRow, WithValidation
 {
-    public $filename;
+    public $filename, $file;
 
-    public function __construct($filename)
+    public function __construct($filename, $file)
     {
-        $this->filename=$filename;
+        $this->filename = $filename;
+        $this->file     = $file;
     }
     /**
      * @param array $row
@@ -28,7 +30,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
         if (!$checkStudent) {
 
             // Save student data
-            $student=Student::create([
+            $student = Student::create([
                 "student_code" => $row['student_code'],
                 "name"         => $row['name'],
                 "email"        => $row['email'],
@@ -38,7 +40,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
                 "city"         => $row['city'],
                 "state"        => $row['state'],
                 "pincode"      => $row['pincode'],
-                "filename"     => $this->filename
+                "file_id"      => $this->file->id
             ]);
 
             // Calculate total marks, percentage, and percentile
@@ -57,7 +59,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
                 'total_marks'  => $totalMarks,
                 'percentage'   => $percentage,
                 'percentile'   => $percentile,
-                'result'       => $this->checkResultStatus($row,$percentage)
+                'result'       => $this->checkResultStatus($row, $percentage)
             ]);
 
             return $student;
@@ -75,7 +77,7 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
     }
 
     // function to check result status
-    private function checkResultStatus($row,$percentage)
+    private function checkResultStatus($row, $percentage)
     {
         if ($row['science'] < 33 || $row['maths'] < 33 || $row['english'] < 33 || $row['gujarati'] < 33 || $row['hindi'] < 33) {
             $result = 'Fail';
@@ -116,5 +118,4 @@ class StudentImport implements ToModel, WithHeadingRow, WithValidation
 
         return $rules;
     }
-
 }

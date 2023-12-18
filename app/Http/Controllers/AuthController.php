@@ -23,8 +23,8 @@ class AuthController extends Controller
         }
 
         if (Auth::attempt($request->only(['email', 'password']))) {
-            $data['token'] = $user->createToken("API TOKEN")->plainTextToken;
-            return success(200, __('string.LoginSuccess'), $data);
+            $token = $user->createToken("API TOKEN")->plainTextToken;
+            return success(200, __('string.LoginSuccess'), ['user'=>$user,'token'=>$token]);
         }
 
         return error(403, __('string.InvalidCredentials'));
