@@ -28,7 +28,8 @@ function error($status, $message, $data = null)
         400 => 'Bad Request!',
         403 => 'Unauthorized!',
         404 => 'Not Found!',
-        500 => 'Internal Server Error'
+        500 => 'Internal Server Error',
+        401 => 'Inactivated'
     ];
 
     if (array_key_exists($status, $errorMessages)) {

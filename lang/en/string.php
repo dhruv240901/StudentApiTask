@@ -7,6 +7,7 @@ return [
     'LogoutSuccess'      => 'User Logged Out Successfully',
     'InvalidCredentials' => 'Invalid Credentials',
     'Unauthenticated'    => 'Please Login',
+    'UserInactive'       => 'Your account is inactivated',
 
     // Schedule messsages
     'ScheduleCreated' => 'Schedule created successfully',

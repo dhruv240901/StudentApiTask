@@ -16,8 +16,13 @@ class AuthController extends Controller
             'password' => 'required|min:6'
         ]);
 
+        $user = User::where('email', $request->email)->first();
+
+        if($user->is_active==false){
+            return error(401,__('string.UserInactive'));
+        }
+
         if (Auth::attempt($request->only(['email', 'password']))) {
-            $user = User::where('email', $request->email)->first();
             $data['token'] = $user->createToken("API TOKEN")->plainTextToken;
             return success(200, __('string.LoginSuccess'), $data);
         }
