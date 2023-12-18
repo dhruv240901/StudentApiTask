@@ -4,16 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\ExportStudent;
 use App\Imports\StudentImport;
-use App\Models\Student;
-use App\Traits\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentController extends Controller
 {
-    use Response;
-
     /* function to import file and store data in database */
     public function import(Request $request)
     {
@@ -29,7 +24,7 @@ class StudentController extends Controller
 
             // Import data from the excel or csv file and save it to database
             Excel::import(new StudentImport($filename), $request->file('student_file'));
-            return $this->success(200, 'students added successfully');
+            return success(200, 'students added successfully');
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             $failures = $e->failures();
 
@@ -40,8 +35,8 @@ class StudentController extends Controller
             }
 
             return $errorMessages;
-        }catch (\Exception $e) {
-            return $this->error(500, $e->getMessage());
+        } catch (\Exception $e) {
+            return error(500, $e->getMessage());
         }
     }
 

@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ScheduleTask;
-use App\Traits\Response;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
-    use Response;
-
     /* function to store schedule */
     public function store(Request $request)
     {
@@ -23,6 +20,6 @@ class ScheduleController extends Controller
 
         // Insert Schedule task into the database
         ScheduleTask::create($request->all());
-        return $this->success(200, 'Schedule created successfully');
+        return success(200, 'Schedule created successfully');
     }
 }
